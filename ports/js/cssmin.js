@@ -183,7 +183,20 @@ function cssmin(css, linebreak_at_column) {
   //   filter: chroma(color="#FFF");
   // which makes the filter break in IE.
   css = css.replace(/([^"'=\s])(\s*)#([\dA-F]{6})/gi, function(all, c, s, rgb) {
-    var rrggbb = rgb.toUpperCase(), r, g, b;
+    var rrggbb = rgb.toUpperCase(), r, g, b, shorter = ( // sub-7-char aliases:
+        { '000080': 'navy'
+        , '008000': 'green'
+        , '008080': 'teal'
+        , '800000': 'maroon'
+        , '800080': 'purple'
+        , '808000': 'olive'
+        , '808080': 'gray'
+        , 'C0C0C0': 'silver'
+        , 'FF0000': 'red'
+        , 'FFA500': 'orange'
+        })[rrggbb];
+    if (shorter) return c + s + shorter;
+
     if ((r = rrggbb.charAt(0)) === rrggbb.charAt(1) &&
         (g = rrggbb.charAt(2)) === rrggbb.charAt(3) &&
         (b = rrggbb.charAt(4)) === rrggbb.charAt(5))
